@@ -4,7 +4,6 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.hilt)
-    alias(libs.plugins.google.services)
     kotlin("kapt")
 }
 
@@ -21,8 +20,8 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
 
-        // 🔑 AdMob App ID — replace with your real ID
-        manifestPlaceholders["admobAppId"] = "ca-app-pub-XXXXXXXXXXXXXXXX~XXXXXXXXXX"
+        // AdMob App ID — replace with your real ID from AdMob dashboard
+        manifestPlaceholders["admobAppId"] = "ca-app-pub-3940256099942544~3347511713"
 
         // Supabase config from local.properties or CI secrets
         buildConfigField("String", "SUPABASE_URL", "\"${project.findProperty("SUPABASE_URL") ?: ""}\"")
@@ -31,10 +30,13 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file(project.findProperty("KEYSTORE_PATH") ?: "keystore.jks")
-            storePassword = project.findProperty("KEYSTORE_PASSWORD") as String? ?: ""
-            keyAlias = project.findProperty("KEY_ALIAS") as String? ?: ""
-            keyPassword = project.findProperty("KEY_PASSWORD") as String? ?: ""
+            val keystorePath = project.findProperty("KEYSTORE_PATH") as String? ?: ""
+            if (keystorePath.isNotEmpty()) {
+                storeFile = file(keystorePath)
+                storePassword = project.findProperty("KEYSTORE_PASSWORD") as String? ?: ""
+                keyAlias = project.findProperty("KEY_ALIAS") as String? ?: ""
+                keyPassword = project.findProperty("KEY_PASSWORD") as String? ?: ""
+            }
         }
     }
 
@@ -43,7 +45,10 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            signingConfig = signingConfigs.getByName("release")
+            val keystorePath = project.findProperty("KEYSTORE_PATH") as String? ?: ""
+            if (keystorePath.isNotEmpty()) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
         debug {
             applicationIdSuffix = ".debug"
@@ -86,18 +91,16 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
 
     // Network
-    implementation(libs.retrofit.core)
-    implementation(libs.retrofit.kotlin.serialization)
     implementation(libs.okhttp.logging)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.coroutines.android)
 
-    // Supabase
-    implementation(libs.supabase.postgrest)
-    implementation(libs.supabase.storage)
-    implementation(libs.supabase.auth)
-    implementation(libs.supabase.realtime)
-    implementation(libs.ktor.client.android)
+    // Supabase BOM — manages all supabase lib versions together
+    implementation(platform("io.github.jan-tennert.supabase:bom:2.1.4"))
+    implementation("io.github.jan-tennert.supabase:postgrest-kt")
+    implementation("io.github.jan-tennert.supabase:storage-kt")
+    implementation("io.github.jan-tennert.supabase:realtime-kt")
+    implementation(libs.ktor.client.okhttp)
 
     // Image loading
     implementation(libs.coil.compose)
