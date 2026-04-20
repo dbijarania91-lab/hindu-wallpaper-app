@@ -5,6 +5,7 @@ import com.mahiinfo.hinduwallpaper.data.model.*
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.postgrest
+import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.Order
 import io.github.jan.supabase.storage.Storage
 import io.github.jan.supabase.storage.storage
@@ -30,12 +31,10 @@ class WallpaperRemoteDataSource @Inject constructor(
 ) {
     private val db get() = supabase.client.postgrest
 
-    // ─── Wallpapers ───────────────────────────────────────────────────────────
-
     suspend fun getTrendingWallpapers(limit: Int = 20): List<Wallpaper> =
         withContext(Dispatchers.IO) {
             db.from("wallpapers")
-                .select {
+                .select(Columns.ALL) {
                     filter { eq("is_trending", true) }
                     order("view_count", Order.DESCENDING)
                     limit(limit.toLong())
@@ -49,7 +48,7 @@ class WallpaperRemoteDataSource @Inject constructor(
         pageSize: Int = 20
     ): List<Wallpaper> = withContext(Dispatchers.IO) {
         db.from("wallpapers")
-            .select {
+            .select(Columns.ALL) {
                 filter {
                     eq("category", category)
                     if (type != null) eq("type", type.name.lowercase())
@@ -65,8 +64,8 @@ class WallpaperRemoteDataSource @Inject constructor(
         pageSize: Int = 20
     ): List<Wallpaper> = withContext(Dispatchers.IO) {
         db.from("wallpapers")
-            .select {
-                filter { if (type != null) eq("type", type.name.lowercase()) }
+            .select(Columns.ALL) {
+                if (type != null) filter { eq("type", type.name.lowercase()) }
                 order("created_at", Order.DESCENDING)
                 range(from = (page * pageSize).toLong(), to = ((page + 1) * pageSize - 1).toLong())
             }.decodeList()
@@ -74,8 +73,8 @@ class WallpaperRemoteDataSource @Inject constructor(
 
     suspend fun searchWallpapers(query: String): List<Wallpaper> = withContext(Dispatchers.IO) {
         db.from("wallpapers")
-            .select {
-                filter { or { ilike("title", "%$query%"); ilike("tags", "%$query%") } }
+            .select(Columns.ALL) {
+                filter { ilike("title", "%$query%") }
                 limit(30)
             }.decodeList()
     }
@@ -84,12 +83,10 @@ class WallpaperRemoteDataSource @Inject constructor(
         db.rpc("increment_download", mapOf("wallpaper_id" to id))
     }
 
-    // ─── Video Status ─────────────────────────────────────────────────────────
-
     suspend fun getTrendingStatuses(limit: Int = 20): List<VideoStatus> =
         withContext(Dispatchers.IO) {
             db.from("video_statuses")
-                .select {
+                .select(Columns.ALL) {
                     filter { eq("is_trending", true) }
                     order("download_count", Order.DESCENDING)
                     limit(limit.toLong())
@@ -99,33 +96,29 @@ class WallpaperRemoteDataSource @Inject constructor(
     suspend fun getAllStatuses(category: String? = null, page: Int = 0): List<VideoStatus> =
         withContext(Dispatchers.IO) {
             db.from("video_statuses")
-                .select {
-                    filter { if (!category.isNullOrBlank()) eq("category", category) }
+                .select(Columns.ALL) {
+                    if (!category.isNullOrBlank()) filter { eq("category", category) }
                     order("created_at", Order.DESCENDING)
                     range(from = (page * 20).toLong(), to = ((page + 1) * 20 - 1).toLong())
                 }.decodeList()
         }
 
-    // ─── Categories ───────────────────────────────────────────────────────────
-
     suspend fun getCategories(type: String = "wallpaper"): List<Category> =
         withContext(Dispatchers.IO) {
             db.from("categories")
-                .select { filter { eq("type", type) }; order("name") }
-                .decodeList()
+                .select(Columns.ALL) {
+                    filter { eq("type", type) }
+                    order("sort_order", Order.ASCENDING)
+                }.decodeList()
         }
-
-    // ─── App Config (AdMob IDs live here) ────────────────────────────────────
 
     suspend fun getAppConfig(): AppConfig = withContext(Dispatchers.IO) {
         db.from("app_config")
-            .select { limit(1) }
+            .select(Columns.ALL) { limit(1) }
             .decodeSingle()
     }
 
-    // ─── Storage signed URL ───────────────────────────────────────────────────
-
     suspend fun getSignedUrl(bucket: String, path: String): String = withContext(Dispatchers.IO) {
-        supabase.client.storage.from(bucket).createSignedUrl(path, 3600)
+        supabase.client.storage.from(bucket).createSignedUrl(path, 3600L)
     }
 }

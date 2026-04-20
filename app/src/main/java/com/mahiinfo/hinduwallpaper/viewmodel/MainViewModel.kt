@@ -3,7 +3,6 @@ package com.mahiinfo.hinduwallpaper.viewmodel
 import android.app.WallpaperManager
 import android.content.Context
 import android.graphics.BitmapFactory
-import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mahiinfo.hinduwallpaper.ads.AdMobManager
