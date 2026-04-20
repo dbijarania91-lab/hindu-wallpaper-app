@@ -1,0 +1,52 @@
+# ══════════════════════════════════════════════════════════════
+#  HINDU WALLPAPER APP — GITHUB PUSH COMMANDS
+#  Copy-paste these one by one in Termux
+# ══════════════════════════════════════════════════════════════
+
+# ── STEP 1: Install git (if not installed) ──────────────────
+pkg install git curl -y
+
+# ── STEP 2: Extract the zip you downloaded ──────────────────
+# (Move the zip to Termux home first)
+cp /sdcard/Download/hindu-wallpaper-app.zip ~/
+cd ~
+unzip hindu-wallpaper-app.zip
+cd hindu-wallpaper-app
+
+# ── STEP 3: Configure git ───────────────────────────────────
+git config user.email "devendrabijarania41@gmail.com"
+git config user.name "Dev Choudhary"
+
+# ── STEP 4: Create GitHub repo ─────────────────────────────
+curl -s \
+  -X POST \
+  -H "Authorization: token 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" \
+  -H "Accept: application/vnd.github.v3+json" \
+  https://api.github.com/user/repos \
+  -d '{"name":"hindu-wallpaper-app","description":"Hindu Wallpaper App by Mahi Info","private":false}'
+
+# ── STEP 5: Get your GitHub username ───────────────────────
+curl -s \
+  -H "Authorization: token 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" \
+  https://api.github.com/user | grep '"login"' | head -1
+
+# ── STEP 6: Add remote and push ────────────────────────────
+# Replace YOUR_USERNAME with the login from step 5
+git remote add origin https://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@github.com/YOUR_USERNAME/hindu-wallpaper-app.git
+git branch -M main
+git push -u origin main
+
+# ── STEP 7: Set GitHub Secrets ─────────────────────────────
+# Replace YOUR_USERNAME below
+
+# Secret 1: SUPABASE_URL
+# Go to: https://github.com/YOUR_USERNAME/hindu-wallpaper-app/settings/secrets/actions
+# Add secret: SUPABASE_URL = https://vrznwyssfmelgoyzebvk.supabase.co
+
+# Secret 2: SUPABASE_ANON_KEY
+# Add secret: SUPABASE_ANON_KEY = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZyem53eXNzZm1lbGdveXplYnZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2NTE1ODcsImV4cCI6MjA5MjIyNzU4N30.LOSDZJBQNloLkda2vYbS1GWtTw5yPHXRx_7Nm8nQlDU
+
+# ── STEP 8: Tag a release to trigger build ─────────────────
+git tag v1.0.0
+git push origin v1.0.0
+# → GitHub Actions will auto-build + sign + create release APK
