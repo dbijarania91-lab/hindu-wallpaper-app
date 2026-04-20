@@ -23,16 +23,21 @@ android {
         // AdMob App ID — replace with your real ID from AdMob dashboard
         manifestPlaceholders["admobAppId"] = "ca-app-pub-3940256099942544~3347511713"
 
-        // Supabase config from local.properties or CI secrets
-        buildConfigField("String", "SUPABASE_URL", "\"${project.findProperty("SUPABASE_URL") ?: ""}\"")
-        buildConfigField("String", "SUPABASE_ANON_KEY", "\"${project.findProperty("SUPABASE_ANON_KEY") ?: ""}\"")
+        buildConfigField(
+            "String", "SUPABASE_URL",
+            "\"${project.findProperty("SUPABASE_URL") ?: "https://vrznwyssfmelgoyzebvk.supabase.co"}\""
+        )
+        buildConfigField(
+            "String", "SUPABASE_ANON_KEY",
+            "\"${project.findProperty("SUPABASE_ANON_KEY") ?: ""}\""
+        )
     }
 
     signingConfigs {
         create("release") {
-            val keystorePath = project.findProperty("KEYSTORE_PATH") as String? ?: ""
-            if (keystorePath.isNotEmpty()) {
-                storeFile = file(keystorePath)
+            val ksPath = project.findProperty("KEYSTORE_PATH") as String? ?: ""
+            if (ksPath.isNotEmpty()) {
+                storeFile = file(ksPath)
                 storePassword = project.findProperty("KEYSTORE_PASSWORD") as String? ?: ""
                 keyAlias = project.findProperty("KEY_ALIAS") as String? ?: ""
                 keyPassword = project.findProperty("KEY_PASSWORD") as String? ?: ""
@@ -44,9 +49,12 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            val keystorePath = project.findProperty("KEYSTORE_PATH") as String? ?: ""
-            if (keystorePath.isNotEmpty()) {
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+            val ksPath = project.findProperty("KEYSTORE_PATH") as String? ?: ""
+            if (ksPath.isNotEmpty()) {
                 signingConfig = signingConfigs.getByName("release")
             }
         }
@@ -60,7 +68,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions { jvmTarget = "17" }
+
+    kotlinOptions {
+        jvmTarget = "17"
+    }
 
     buildFeatures {
         compose = true
@@ -68,15 +79,20 @@ android {
     }
 
     packaging {
-        resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" }
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
     }
 }
 
 dependencies {
+    // AndroidX Core
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.activity.compose)
+
+    // Compose BOM
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
@@ -85,7 +101,7 @@ dependencies {
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.navigation.compose)
 
-    // DI
+    // Hilt DI
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
@@ -95,14 +111,14 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.coroutines.android)
 
-    // Supabase BOM — manages all supabase lib versions together
+    // Supabase
     implementation(platform("io.github.jan-tennert.supabase:bom:2.1.4"))
     implementation("io.github.jan-tennert.supabase:postgrest-kt")
     implementation("io.github.jan-tennert.supabase:storage-kt")
     implementation("io.github.jan-tennert.supabase:realtime-kt")
     implementation(libs.ktor.client.okhttp)
 
-    // Image loading
+    // Image Loading
     implementation(libs.coil.compose)
     implementation(libs.coil.gif)
     implementation(libs.coil.video)
@@ -111,25 +127,30 @@ dependencies {
     implementation(libs.exoplayer)
     implementation(libs.exoplayer.ui)
 
-    // Local DB & Prefs
+    // Room DB
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     kapt(libs.room.compiler)
+
+    // DataStore
     implementation(libs.datastore.preferences)
 
     // AdMob
     implementation(libs.admob)
 
-    // UI extras
+    // UI Extras
     implementation(libs.lottie.compose)
     implementation(libs.accompanist.permissions)
     implementation(libs.palette)
 
-    // Background
+    // WorkManager
     implementation(libs.workmanager)
 
+    // Debug
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }
 
-kapt { correctErrorTypes = true }
+kapt {
+    correctErrorTypes = true
+}
