@@ -11,6 +11,6 @@
         android:fontFamily="serif"
         android:textSize="36sp"
         android:fillColor="#FF8C00">
-        <tspan android:x="36" android:y="66">ॐ</tspan>
+        <tspan android:x="36dp" android:y="66dp">ॐ</tspan>
     </text>
 </vector>
