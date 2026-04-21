@@ -81,10 +81,13 @@ class DownloadService : Service() {
             output.close()
             input.close()
 
-            // Notify media scanner
-            sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE).apply {
-                data = android.net.Uri.fromFile(file)
-            })
+            // Notify media scanner (API 29+ compatible)
+            try {
+                val values = android.content.ContentValues().apply {
+                    put(android.provider.MediaStore.MediaColumns.DATA, file.absolutePath)
+                }
+                contentResolver.insert(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+            } catch (_: Exception) { }
 
             notifyComplete(file.absolutePath)
         } catch (e: Exception) {

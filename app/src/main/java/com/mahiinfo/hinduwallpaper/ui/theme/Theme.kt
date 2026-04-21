@@ -1,17 +1,12 @@
 package com.mahiinfo.hinduwallpaper.ui.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.mahiinfo.hinduwallpaper.R
-
-// ─── Saffron & Deep Purple palette (Hindu aesthetic) ─────────────────────────
 
 object HinduColors {
     val Saffron = Color(0xFFFF6B00)
@@ -23,14 +18,10 @@ object HinduColors {
     val RoyalPurple = Color(0xFF5B1FA8)
     val Crimson = Color(0xFFDC143C)
     val Lotus = Color(0xFFFF69B4)
-
-    // Glassmorphism surfaces
-    val GlassLight = Color(0x26FFFFFF)     // white/15%
-    val GlassMedium = Color(0x40FFFFFF)    // white/25%
-    val GlassBorder = Color(0x33FFFFFF)    // white/20%
-    val GlassDark = Color(0x1AFFFFFF)      // white/10%
-
-    // Backgrounds
+    val GlassLight = Color(0x26FFFFFF)
+    val GlassMedium = Color(0x40FFFFFF)
+    val GlassBorder = Color(0x33FFFFFF)
+    val GlassDark = Color(0x1AFFFFFF)
     val BgDark = Color(0xFF0A0012)
     val BgGradientStart = Color(0xFF150025)
     val BgGradientEnd = Color(0xFF0D0018)
@@ -51,17 +42,14 @@ private val DarkColorScheme = darkColorScheme(
     outline = HinduColors.GlassBorder
 )
 
-val PujaFont = FontFamily.Default   // Replace with: FontFamily(Font(R.font.puja_regular))
-val DevanagariFont = FontFamily.Default
-
 val HinduTypography = Typography(
-    displayLarge = TextStyle(fontFamily = PujaFont, fontWeight = FontWeight.Bold, fontSize = 32.sp),
-    displayMedium = TextStyle(fontFamily = PujaFont, fontWeight = FontWeight.Bold, fontSize = 28.sp),
-    titleLarge = TextStyle(fontFamily = PujaFont, fontWeight = FontWeight.SemiBold, fontSize = 22.sp),
-    titleMedium = TextStyle(fontFamily = PujaFont, fontWeight = FontWeight.Medium, fontSize = 18.sp),
-    bodyLarge = TextStyle(fontFamily = DevanagariFont, fontWeight = FontWeight.Normal, fontSize = 16.sp),
-    bodyMedium = TextStyle(fontFamily = DevanagariFont, fontWeight = FontWeight.Normal, fontSize = 14.sp),
-    labelSmall = TextStyle(fontFamily = PujaFont, fontWeight = FontWeight.Medium, fontSize = 11.sp)
+    displayLarge = TextStyle(fontFamily = FontFamily.Serif, fontWeight = FontWeight.Bold, fontSize = 32.sp),
+    displayMedium = TextStyle(fontFamily = FontFamily.Serif, fontWeight = FontWeight.Bold, fontSize = 28.sp),
+    titleLarge = TextStyle(fontFamily = FontFamily.Serif, fontWeight = FontWeight.SemiBold, fontSize = 22.sp),
+    titleMedium = TextStyle(fontFamily = FontFamily.Serif, fontWeight = FontWeight.Medium, fontSize = 18.sp),
+    bodyLarge = TextStyle(fontFamily = FontFamily.Default, fontWeight = FontWeight.Normal, fontSize = 16.sp),
+    bodyMedium = TextStyle(fontFamily = FontFamily.Default, fontWeight = FontWeight.Normal, fontSize = 14.sp),
+    labelSmall = TextStyle(fontFamily = FontFamily.Serif, fontWeight = FontWeight.Medium, fontSize = 11.sp)
 )
 
 @Composable

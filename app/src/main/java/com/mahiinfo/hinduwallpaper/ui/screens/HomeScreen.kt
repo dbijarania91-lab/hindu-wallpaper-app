@@ -23,7 +23,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
 import com.mahiinfo.hinduwallpaper.ads.AdMobBanner
 import com.mahiinfo.hinduwallpaper.ui.components.*
 import com.mahiinfo.hinduwallpaper.ui.theme.HinduColors

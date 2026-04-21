@@ -26,8 +26,6 @@ import com.mahiinfo.hinduwallpaper.ui.components.GlassCard
 import com.mahiinfo.hinduwallpaper.ui.theme.HinduColors
 import com.mahiinfo.hinduwallpaper.viewmodel.MainViewModel
 
-// ─── Favorites Screen ─────────────────────────────────────────────────────────
-
 @Composable
 fun FavoritesScreen(
     vm: MainViewModel = hiltViewModel(),
@@ -36,15 +34,12 @@ fun FavoritesScreen(
     val favorites by vm.favorites.collectAsState(initial = emptyList())
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
             .background(Brush.verticalGradient(listOf(HinduColors.BgGradientStart, HinduColors.BgGradientEnd)))
     ) {
         Column {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .statusBarsPadding()
+                modifier = Modifier.fillMaxWidth().statusBarsPadding()
                     .padding(horizontal = 16.dp, vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -70,11 +65,7 @@ fun FavoritesScreen(
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     items(favorites, key = { it.id }) { fav ->
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(14.dp))
-                                .aspectRatio(9f / 16f)
-                        ) {
+                        Box(modifier = Modifier.clip(RoundedCornerShape(14.dp)).aspectRatio(9f / 16f)) {
                             AsyncImage(
                                 model = fav.imageUrl,
                                 contentDescription = fav.title,
@@ -83,10 +74,7 @@ fun FavoritesScreen(
                             )
                             IconButton(
                                 onClick = { vm.removeFavorite(fav.id) },
-                                modifier = Modifier
-                                    .align(Alignment.TopEnd)
-                                    .padding(4.dp)
-                                    .size(32.dp)
+                                modifier = Modifier.align(Alignment.TopEnd).padding(4.dp).size(32.dp)
                                     .clip(androidx.compose.foundation.shape.CircleShape)
                                     .background(Color.Black.copy(alpha = 0.5f))
                             ) {
@@ -100,40 +88,24 @@ fun FavoritesScreen(
     }
 }
 
-// ─── More / Settings Screen ───────────────────────────────────────────────────
-
 @Composable
 fun MoreScreen() {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
             .background(Brush.verticalGradient(listOf(HinduColors.BgGradientStart, HinduColors.BgGradientEnd)))
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .statusBarsPadding()
-                .padding(horizontal = 16.dp)
-        ) {
+        Column(modifier = Modifier.fillMaxSize().statusBarsPadding().padding(horizontal = 16.dp)) {
             Spacer(Modifier.height(16.dp))
             Text("More", color = Color.White, fontSize = 28.sp, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(24.dp))
 
-            // App branding
             GlassCard(modifier = Modifier.fillMaxWidth()) {
-                Row(
-                    modifier = Modifier.padding(20.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+                Row(modifier = Modifier.padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
                     Box(
-                        modifier = Modifier
-                            .size(56.dp)
-                            .clip(RoundedCornerShape(16.dp))
+                        modifier = Modifier.size(56.dp).clip(RoundedCornerShape(16.dp))
                             .background(Brush.radialGradient(listOf(HinduColors.Saffron, HinduColors.RoyalPurple))),
                         contentAlignment = Alignment.Center
-                    ) {
-                        Text("🕉", fontSize = 28.sp)
-                    }
+                    ) { Text("🕉", fontSize = 28.sp) }
                     Spacer(Modifier.width(16.dp))
                     Column {
                         Text("Hindu Wallpaper", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
@@ -145,13 +117,13 @@ fun MoreScreen() {
 
             Spacer(Modifier.height(20.dp))
 
-            // Menu items
+            // Fixed: removed YouTube/Feedback/Policy icons that may not exist, use safe alternatives
             listOf(
                 Triple(Icons.Default.Star, "Rate App", HinduColors.Gold),
                 Triple(Icons.Default.Share, "Share App", HinduColors.Saffron),
-                Triple(Icons.Default.Feedback, "Feedback", HinduColors.RoyalPurple),
-                Triple(Icons.Default.Policy, "Privacy Policy", Color.White.copy(alpha = 0.7f)),
-                Triple(Icons.Default.YouTube, "YouTube Channel", Color(0xFFFF0000)),
+                Triple(Icons.Default.Info, "About", HinduColors.RoyalPurple),
+                Triple(Icons.Default.PrivacyTip, "Privacy Policy", Color.White.copy(alpha = 0.7f)),
+                Triple(Icons.Default.PlayCircle, "YouTube Channel", Color(0xFFFF0000)),
             ).forEach { (icon, label, tint) ->
                 MoreMenuItem(icon = icon, label = label, tint = tint) { }
                 Spacer(Modifier.height(8.dp))
@@ -161,31 +133,17 @@ fun MoreScreen() {
 }
 
 @Composable
-private fun MoreMenuItem(
-    icon: ImageVector,
-    label: String,
-    tint: Color,
-    onClick: () -> Unit
-) {
-    GlassCard(
-        modifier = Modifier
-            .fillMaxWidth()
-    ) {
+private fun MoreMenuItem(icon: ImageVector, label: String, tint: Color, onClick: () -> Unit) {
+    GlassCard(modifier = Modifier.fillMaxWidth()) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 14.dp),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 14.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
-                modifier = Modifier
-                    .size(36.dp)
-                    .clip(RoundedCornerShape(10.dp))
+                modifier = Modifier.size(36.dp).clip(RoundedCornerShape(10.dp))
                     .background(tint.copy(alpha = 0.15f)),
                 contentAlignment = Alignment.Center
-            ) {
-                Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(20.dp))
-            }
+            ) { Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(20.dp)) }
             Spacer(Modifier.width(14.dp))
             Text(label, color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.Medium, modifier = Modifier.weight(1f))
             Icon(Icons.Default.ChevronRight, null, tint = Color.White.copy(alpha = 0.3f), modifier = Modifier.size(18.dp))

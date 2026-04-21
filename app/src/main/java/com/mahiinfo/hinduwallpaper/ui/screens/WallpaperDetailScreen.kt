@@ -67,7 +67,7 @@ fun WallpaperDetailScreen(
                 .background(
                     Brush.verticalGradient(
                         colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.8f)),
-                        startY = Float.MAX_VALUE * 0.5f
+                        startY = 800f
                     )
                 )
         )
